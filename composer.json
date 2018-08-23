@@ -1,0 +1,21 @@
+{
+    "name": "iflux1990/yii2-scorm",
+    "description": "A plug'n'play extension for displaying scorm LMS packages",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","scorm"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "iflux1990",
+            "email": "dfj@iflux.dk"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "iflux1990\\scorm\\": ""
+        }
+    }
+}
