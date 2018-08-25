@@ -6,11 +6,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "iflux1990",
-            "email": "dfj@iflux.dk"
+            "name": "Daniel Foght Jensen",
+            "email": "dfj@iflux.dk",
+            "role": "Project leader and developer"
         }
     ],
     "require": {
+        "ext-zip": "*",
         "yiisoft/yii2": "~2.0.0"
     },
     "autoload": {

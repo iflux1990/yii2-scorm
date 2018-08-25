@@ -2,6 +2,7 @@
 namespace iflux1990\scorm;
 
 use ZipArchive;
+use PlayerAsset;
 use yii\base\Widget;
 
 /**
@@ -10,7 +11,7 @@ use yii\base\Widget;
  */
 class Player extends Widget
 {
-    private $_tempLocation = ___DIR___/package;
+    private $_tempLocation = ___DIR___ . "/assets/package";
 
     /**
      * @inheritDoc
@@ -19,11 +20,13 @@ class Player extends Widget
      */
     public function run()
     {
+        PlayerAsset::register($this);
+
         return "Player loaded!";
     }
 
     /**
-     * Undocumented function
+     * extracts the contents of a zip file to known location
      *
      * @param string $filePath The path to a compliant SCORM package in the .zip format
      *
@@ -33,7 +36,7 @@ class Player extends Widget
     {
         $zipObject = new ZipArchive();
         if ($zipObject->open($filePath)) {
-            $zipObject->extractTo($target);
+            $zipObject->extractTo($this->_tempLocation);
             $zipObject->close();
     
             unlink($filePath);

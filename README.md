@@ -1,4 +1,4 @@
-Yii2 Scorm Engine
+Yii2 Scorm Engine (WIP)
 =================
 A plug'n'play extension for displaying scorm LMS packages
 
