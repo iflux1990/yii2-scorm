@@ -11,7 +11,7 @@ use yii\base\Widget;
  */
 class Player extends Widget
 {
-    private $_tempLocation = ___DIR___ . "/assets/package";
+    private $_tempLocation = __DIR__ . "src/assets/package";
 
     /**
      * @inheritDoc

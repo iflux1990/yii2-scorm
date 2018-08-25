@@ -12,4 +12,8 @@ use yii\web\AssetBundle;
 class PlayerAsset extends AssetBundle
 {
     public $sourcePath = "@yii2-scorm/src/assets";
+
+    public $js = [
+        "js/widget.js"
+    ];
 }
