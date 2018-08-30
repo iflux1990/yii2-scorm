@@ -1,4 +1,6 @@
 <?php
+namespace iflux1990\scorm;
+
 
 use yii\web\AssetBundle;
 
@@ -11,9 +13,9 @@ use yii\web\AssetBundle;
  */
 class PlayerAsset extends AssetBundle
 {
-    public $sourcePath = "@yii2-scorm/src/assets";
+    public $sourcePath = "@vendor/iflux1990/yii2-scorm/src/assets";
 
     public $js = [
-        "js/widget.js"
+        "js/scorm-player.js"
     ];
 }

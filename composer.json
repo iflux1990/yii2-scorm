@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "iflux1990\\scorm\\": ""
+            "iflux1990\\scorm\\": "src/"
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+namespace iflux1990\scorm;
 
 /**
  * @package yii2-scorm
@@ -25,7 +26,8 @@ class Module extends YiiModule
 
         $config = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'basePath' => '@yii2-scorm/src/messages',
+            'basePath' => '@yii2-scorm/messages',
+            'sourceLanguage' => 'en-US',
             'forceTranslation' => true
         ];
 

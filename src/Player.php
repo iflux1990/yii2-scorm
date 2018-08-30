@@ -1,9 +1,12 @@
 <?php
 namespace iflux1990\scorm;
 
+use Yii;
 use ZipArchive;
-use PlayerAsset;
+use yii\web\View;
 use yii\base\Widget;
+use yii\helpers\Html;
+use yii\base\Exception;
 
 /**
  * Widget class for scorm player.
@@ -11,7 +14,28 @@ use yii\base\Widget;
  */
 class Player extends Widget
 {
-    private $_tempLocation = __DIR__ . "src/assets/package";
+    private $_tempLocation = __DIR__ . "\assets\package";
+    public $path;
+
+    /**
+     * @throws Exception
+     */
+    public function init()
+    {
+        if(!$this->path) {
+            throw new Exception(Yii::t("yii2-scorm", 'Missing parameter "path" for yii2-scorm/Player'));
+        }
+
+        if(!file_exists($this->path)) {
+            throw new PackageNotFoundException(Yii::t('yii2-scorm', "{path} not found.", ['path' => $this->path]));
+        }
+
+        $this->_unpackZip($this->path);
+
+        PlayerAsset::register($this->getView());
+
+        parent::init();
+    }
 
     /**
      * @inheritDoc
@@ -20,9 +44,14 @@ class Player extends Widget
      */
     public function run()
     {
-        PlayerAsset::register($this);
+        $str = "";
+        $str .= Html::beginTag('div', ['id' => $this->id, 'class' => 'scorm-player']);
+        $str .= Html::button('Go!', ['id' => 'yii2-scorm-go-button', 'class' => 'btn btn-default', 'onclick' => "openPackage('{$this->path}')"]);
+        $str .= Html::endTag('div');
 
-        return "Player loaded!";
+        $this->getView()->registerJs('var widgetId = "' . $this->path . "\";", View::POS_HEAD);
+
+        return $str;
     }
 
     /**
@@ -32,16 +61,65 @@ class Player extends Widget
      *
      * @return void
      */
-    private function _openZip($filePath)
+    private function _unpackZip($filePath)
     {
         $zipObject = new ZipArchive();
+        $packageMd5 = md5_file($filePath);
+
+        if(file_exists($this->_tempLocation . "/" . $packageMd5)) {
+            return;
+        }
+
         if ($zipObject->open($filePath)) {
-            $zipObject->extractTo($this->_tempLocation);
-            $zipObject->close();
-    
-            unlink($filePath);
+
+            $tempName = time();
+            $cache = new CacheManager();
+
+            if ($zipObject->extractTo($this->_tempLocation . "/" . $tempName)) {
+                $packageName = $cache->add($filePath);
+
+                if (isset($packageName) && $packageName) {
+                    $zipObject->close();
+
+                    if (file_exists($this->_tempLocation . "/" . $packageName) && file_exists($this->_tempLocation . "/" . $tempName)) {
+                        $this->deleteDirectory($this->_tempLocation . "/" . $tempName);
+                    } else {
+                        rename($this->_tempLocation . "/" . $tempName, $this->_tempLocation . "/" . $packageName);
+                    }
+                }
+            }
+
         } else {
-            throw new ErrorException(Yii::t('yii2-scorm', "Unable to open the suplied file"));
+            throw new ErrorException(Yii::t('yii2-scorm', "Unable to open the supplied file"));
         }
     }
+
+    /**
+     * @param $directory
+     * @return bool
+     */
+    private function deleteDirectory($directory)
+    {
+        if (!file_exists($directory)) {
+            return true;
+        }
+
+        if (!is_dir($directory)) {
+            return unlink($directory);
+        }
+
+        foreach (scandir($directory) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            if (!$this->deleteDirectory($directory . "/" . $item)) {
+                return false;
+            }
+
+        }
+
+        return rmdir($directory);
+    }
+
 }
